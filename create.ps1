@@ -1,13 +1,23 @@
 ﻿
 function findPutty(){
     $search = Get-ChildItem -Path C:\ -Filter putty.exe -Recurse -ErrorAction SilentlyContinue |  Where-Object { $_.Attributes -ne "Directory"} | Select-Object -First 1
-    return ("{0}\{1}" -f $search.DirectoryName,$search.Name)
+    if ( $? -eq $true) {
+        return ("{0}\{1}" -f $search.DirectoryName,$search.Name)
+    }
+    else{
+        return $false
+    }
 }
 
 $sessions = Get-ChildItem 'HKCU:\Software\SimonTatham\PuTTY\Sessions'
 #$dir = ("{0}\Microsoft\Windows\Start Menu\Programs\ssh" -f $env:APPDATA)
 $dir = ("{0}\ssh_connections" -f $HOME)
 $puttypath = findPutty
+if ($puttypath -eq $false ){
+    echo "No putty on c:\`nEnter to exit..."
+    Read-Host
+    exit 2
+}
 
 rm $dir -Recurse -ErrorAction SilentlyContinue | Out-Null
 mkdir $dir -ErrorAction SilentlyContinue  | Out-Null
