@@ -2,7 +2,7 @@
 function findPutty(){
 
     # Find PuTTY on C: drive. It stops after first hit
-    $search = Get-ChildItem -Path C:\ -Filter putty.exe -Recurse -ErrorAction SilentlyContinue |  Where-Object { $_.Attributes -ne "Directory"} | Select-Object -First 1
+    $search = Get-ChildItem -Path C:\ -Filter putty.exe -Recurse -ErrorAction SilentlyContinue |  Where-Object { $_.Attributes -ne "Directory" } | Select-Object -First 1
     
     # Check if exists and not junk file
     if ( $search.Length -gt 1337) {
@@ -19,7 +19,7 @@ $sessions = Get-ChildItem 'HKCU:\Software\SimonTatham\PuTTY\Sessions'
 $dir = ("{0}\ssh_connections" -f $HOME)
 $puttypath = findPutty
 if ($puttypath -eq $false ){
-    Write-Host -ForegroundColor Red "No putty.exe on c:\"
+    Write-Host -ForegroundColor Red "No putty.exe on c:\ found"
     Write-Host "Press enter to exit..."
     Read-Host
     exit 1
@@ -29,6 +29,7 @@ if ($puttypath -eq $false ){
 rm $dir -Recurse -ErrorAction SilentlyContinue | Out-Null
 mkdir $dir -ErrorAction SilentlyContinue  | Out-Null
 
+# Create shortcut (alias) for each stored session 
 foreach ($i in $sessions) {
     
     $name = ($i.Name.Substring($i.Name.LastIndexOf("\") + 1)).Replace("%20"," ")
